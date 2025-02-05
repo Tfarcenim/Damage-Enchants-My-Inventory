@@ -7,7 +7,7 @@
     "mixins": [
     ],
     "client": [
-        "MixinTitleScreen"
+      "tfar.damageenchantsmyinventory.mixin.MixinTitleScreen"
     ],
     "server": [
     ],
