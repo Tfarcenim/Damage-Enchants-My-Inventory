@@ -2,3 +2,8 @@ accessWidener v1 named
 
 accessible method net/minecraft/world/level/GameRules$IntegerValue create (I)Lnet/minecraft/world/level/GameRules$Type;
 accessible method net/minecraft/world/level/GameRules$BooleanValue create (Z)Lnet/minecraft/world/level/GameRules$Type;
+
+accessible field net/minecraft/world/entity/AreaEffectCloud victims Ljava/util/Map;
+accessible field net/minecraft/world/entity/AreaEffectCloud effects Ljava/util/List;
+accessible field net/minecraft/world/entity/AreaEffectCloud reapplicationDelay I
+accessible field net/minecraft/world/entity/AreaEffectCloud ownerUUID Ljava/util/UUID;

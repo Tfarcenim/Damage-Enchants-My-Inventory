@@ -23,7 +23,11 @@ public class ModLangProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
-        addDefaultEnchantment(() -> ModEnchantments.INFERNAL_FLAME);
+
+        DamageEnchantsMyInventory.getKnownEnchantments().forEach(enchantment -> {
+            addDefaultEnchantment(() -> enchantment);
+        });
+
         addDefaultBlock(() -> ModBlocks.INFERNAL_FIRE);
     }
 

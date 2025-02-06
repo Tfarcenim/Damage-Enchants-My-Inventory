@@ -2,6 +2,7 @@ package tfar.damageenchantsmyinventory;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -11,10 +12,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -25,6 +28,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import tfar.damageenchantsmyinventory.client.ModClientForge;
 import tfar.damageenchantsmyinventory.datagen.ModDatagen;
 import tfar.damageenchantsmyinventory.ducks.PlayerDuck;
+import tfar.damageenchantsmyinventory.entity.SmallTnt;
+import tfar.damageenchantsmyinventory.init.ModEnchantments;
 import tfar.damageenchantsmyinventory.init.ModTags;
 
 import java.util.ArrayList;
@@ -53,12 +58,20 @@ public class DamageEnchantsMyInventoryForge {
         DamageEnchantsMyInventory.init();
         MinecraftForge.EVENT_BUS.addListener(this::commands);
         MinecraftForge.EVENT_BUS.addListener(this::damage);
+        MinecraftForge.EVENT_BUS.addListener(this::blockBreak);
     }
 
     void damage(LivingDamageEvent event) {
         LivingEntity living = event.getEntity();
         DamageSource source = event.getSource();
         float amount = event.getAmount();
+
+        if (source.getEntity() instanceof LivingEntity livingAttacker) {
+            if (livingAttacker.getMainHandItem().getEnchantmentLevel(ModEnchantments.LIFE_LEECH) > 0) {
+                livingAttacker.heal((float) (amount * DEMIConfig.life_leech_amount));
+            }
+        }
+
         if (/*source.getEntity() instanceof Player playerAttacker && */living instanceof Player playerTarget) {
             boolean isAttackerRunner = false;//PlayerDuck.of(playerAttacker).isRunner();
             boolean isTargetRunner = PlayerDuck.of(playerTarget).isRunner();
@@ -71,6 +84,17 @@ public class DamageEnchantsMyInventoryForge {
                     }
                 }
             }
+        }
+    }
+
+    void blockBreak(BlockEvent.BreakEvent event) {
+        Player player = event.getPlayer();
+        BlockPos pos = event.getPos();
+        Level level = (Level) event.getLevel();
+        ItemStack stack = player.getMainHandItem();
+        if (stack.getEnchantmentLevel(ModEnchantments.VOLATILE_HARVEST) > 0) {
+            SmallTnt smallTnt = new SmallTnt(level,pos.getX()+.5,pos.getY(),pos.getZ()+.5,player);
+            level.addFreshEntity(smallTnt);
         }
     }
 

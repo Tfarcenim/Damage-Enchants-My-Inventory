@@ -36,7 +36,9 @@ public class EnchantmentTagsProvider extends TagsProvider<Enchantment> {
         }
         tag(ModTags.Enchantments.NEUTRAL).add(vanilla.stream().map(EnchantmentTagsProvider::getKey).toArray(ResourceKey[]::new));
         tag(ModTags.Enchantments.HUNTER).addTag(ModTags.Enchantments.NEUTRAL);
-        tag(ModTags.Enchantments.RUNNER).addTag(ModTags.Enchantments.NEUTRAL).add(getKey(ModEnchantments.INFERNAL_FLAME));
+        tag(ModTags.Enchantments.RUNNER).addTag(ModTags.Enchantments.NEUTRAL)
+                .add(getKey(ModEnchantments.INFERNAL_FLAME),getKey(ModEnchantments.LIFE_LEECH),
+                        getKey(ModEnchantments.SHADOW_BLINK),getKey(ModEnchantments.TOXIC_CLOUD),getKey(ModEnchantments.VOLATILE_HARVEST));
     }
 
     static ResourceKey<Enchantment> getKey(Enchantment enchantment) {
