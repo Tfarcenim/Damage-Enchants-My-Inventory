@@ -1,11 +1,17 @@
 package tfar.damageenchantsmyinventory.platform.services;
 
 import net.minecraft.core.Registry;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import tfar.damageenchantsmyinventory.network.client.S2CModPacket;
+import tfar.damageenchantsmyinventory.network.server.C2SModPacket;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
 
 public interface IPlatformHelper {
 
@@ -62,4 +68,12 @@ public interface IPlatformHelper {
     }
 
     <F> void registerAll(Map<String,? extends F> map, Registry<F> registry, Class<? extends F> filter);
+
+    <MSG extends S2CModPacket> void registerClientPacket(Class<MSG> packetLocation, Function<FriendlyByteBuf,MSG> reader);
+    <MSG extends C2SModPacket> void registerServerPacket(Class<MSG> packetLocation, Function<FriendlyByteBuf,MSG> reader);
+    void sendToClient(S2CModPacket msg, ServerPlayer player);
+    void sendToServer(C2SModPacket msg);
+
+    void sendToTrackingClients(S2CModPacket msg, Entity entity);
+
 }

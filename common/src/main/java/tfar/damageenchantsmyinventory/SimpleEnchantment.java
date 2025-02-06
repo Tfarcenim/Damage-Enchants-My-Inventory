@@ -91,4 +91,8 @@ public class SimpleEnchantment extends Enchantment {
     public interface PostAttack {
         void doPostAttack(LivingEntity attacker, Entity target, int enchantmentLevel);
     }
+
+    public static final IntUnaryOperator SILK_TOUCH_RANGE = level -> 50;
+    public static final IntUnaryOperator SILK_TOUCH_MIN = level -> 15;
+
 }

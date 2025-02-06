@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import tfar.damageenchantsmyinventory.PlayerDuck;
+import tfar.damageenchantsmyinventory.ducks.PlayerDuck;
 
 @Mixin(Player.class)
 public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
@@ -30,7 +30,6 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck {
     public void setRunner(boolean runner) {
         this.runner = runner;
     }
-
 
     @Inject(method = "addAdditionalSaveData",at = @At("RETURN"))
     private void addExtra(CompoundTag $$0, CallbackInfo ci){
