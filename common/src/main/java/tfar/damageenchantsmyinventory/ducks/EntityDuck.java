@@ -11,6 +11,13 @@ public interface EntityDuck {
 
     void setModData(EntityModData entityModData);
 
+    default boolean displayInfernalFlame() {
+        return getModData().infernalFire();
+    }
+
+    int getInfernalFireTicks();
+    void setInfernalFireTicks(int ticks);
+
     default void modifyData(UnaryOperator<EntityModData> function) {
         setModData(function.apply(getModData()));
     }

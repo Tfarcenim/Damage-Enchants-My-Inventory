@@ -1,11 +1,17 @@
 package tfar.damageenchantsmyinventory;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import tfar.damageenchantsmyinventory.ducks.EntityDuck;
 import tfar.damageenchantsmyinventory.init.ModBlocks;
 import tfar.damageenchantsmyinventory.init.ModEnchantments;
 import tfar.damageenchantsmyinventory.network.PacketHandler;
+import tfar.damageenchantsmyinventory.network.client.S2CEntityModData;
 import tfar.damageenchantsmyinventory.platform.Services;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Items;
@@ -34,6 +40,28 @@ public class DamageEnchantsMyInventory {
         // we have an interface in the common code and use a loader specific implementation to delegate our call to
         // the platform specific approach.
         PacketHandler.registerPackets();
+    }
+
+    public static void entityTickEvent(Entity entity) {
+        EntityDuck duck = EntityDuck.of(entity);
+        if (entity.level().isClientSide) {
+            // this.clearSoulFire();
+        } else if (duck.displayInfernalFlame()) {
+            if (duck.getInfernalFireTicks() % 20 == 0) {
+                entity.hurt(entity.damageSources().onFire(), 1.0F);
+                duck.setInfernalFireTicks(20);
+            }
+            duck.setInfernalFireTicks(duck.getInfernalFireTicks() - 1);
+           /* if (this.getTicksFrozen() > 0) {
+                this.setTicksFrozen(0);
+                self.level().levelEvent(null, LevelEvent.SOUND_EXTINGUISH_FIRE, this.blockPosition, 1);
+            }*/
+        }
+
+        if (!entity.level().isClientSide) {
+            Services.PLATFORM.sendToTrackingClients(new S2CEntityModData(entity, duck.getModData()), entity);
+            //      this.setFlagOnSoulFire(this.infernalFireTicks > 0);
+        }
     }
 
     public static ResourceLocation id(String path) {

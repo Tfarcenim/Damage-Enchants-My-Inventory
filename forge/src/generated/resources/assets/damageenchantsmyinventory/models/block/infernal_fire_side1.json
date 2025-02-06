@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_fire_side",
+  "textures": {
+    "fire": "damageenchantsmyinventory:block/infernal_fire_1"
+  }
+}

@@ -14,4 +14,10 @@ public class ModEnchantments {
             .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
             .postAttack((attacker, target, enchantmentLevel) -> EntityDuck.of(target).modifyData(EntityModData.INFERNAL_FIRE,true))
             .build();
+
+    public static final Enchantment LIFE_LEECH = SimpleEnchantment.Properties
+            .builder(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND)
+            .range(SimpleEnchantment.SILK_TOUCH_RANGE)
+            .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
+            .build();
 }

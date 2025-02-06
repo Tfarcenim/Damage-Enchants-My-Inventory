@@ -10,6 +10,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 import tfar.damageenchantsmyinventory.DamageEnchantsMyInventory;
+import tfar.damageenchantsmyinventory.init.ModEnchantments;
 import tfar.damageenchantsmyinventory.init.ModTags;
 
 import java.util.HashSet;
@@ -35,7 +36,7 @@ public class EnchantmentTagsProvider extends TagsProvider<Enchantment> {
         }
         tag(ModTags.Enchantments.NEUTRAL).add(vanilla.stream().map(EnchantmentTagsProvider::getKey).toArray(ResourceKey[]::new));
         tag(ModTags.Enchantments.HUNTER).addTag(ModTags.Enchantments.NEUTRAL);
-        tag(ModTags.Enchantments.RUNNER).addTag(ModTags.Enchantments.NEUTRAL);
+        tag(ModTags.Enchantments.RUNNER).addTag(ModTags.Enchantments.NEUTRAL).add(getKey(ModEnchantments.INFERNAL_FLAME));
     }
 
     static ResourceKey<Enchantment> getKey(Enchantment enchantment) {

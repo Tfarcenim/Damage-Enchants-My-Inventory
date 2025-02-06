@@ -1,2 +1,4 @@
-// 1.20.1	2025-02-05T18:56:24.8609274	Tags for minecraft:enchantment mod id damageenchantsmyinventory
-2be0fcdf16439e3b648392362eecaedcd04fff57 data/damageenchantsmyinventory/tags/enchantment/neutral.json
+// 1.20.1	2025-02-06T03:29:44.1323266	Tags for minecraft:enchantment mod id damageenchantsmyinventory
+0d8a931c425f6953ca0b36273081e3927fb14513 data/damageenchantsmyinventory/tags/enchantment/hunter.json
+8f33c1381ac61e432c1ea157e083daba3bdc51d0 data/damageenchantsmyinventory/tags/enchantment/neutral.json
+0d8a931c425f6953ca0b36273081e3927fb14513 data/damageenchantsmyinventory/tags/enchantment/runner.json

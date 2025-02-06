@@ -19,8 +19,10 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
+import tfar.damageenchantsmyinventory.client.ModClientForge;
 import tfar.damageenchantsmyinventory.datagen.ModDatagen;
 import tfar.damageenchantsmyinventory.ducks.PlayerDuck;
 import tfar.damageenchantsmyinventory.init.ModTags;
@@ -44,8 +46,10 @@ public class DamageEnchantsMyInventoryForge {
         bus.addListener(this::registerObjs);
         bus.addListener(this::setup);
         bus.addListener(ModDatagen::gather);
+        if (FMLEnvironment.dist.isClient()) {
+            ModClientForge.init(bus);
+        }
         // Use Forge to bootstrap the Common mod.
-        DamageEnchantsMyInventory.LOG.info("Hello Forge world!");
         DamageEnchantsMyInventory.init();
         MinecraftForge.EVENT_BUS.addListener(this::commands);
         MinecraftForge.EVENT_BUS.addListener(this::damage);
@@ -54,6 +58,7 @@ public class DamageEnchantsMyInventoryForge {
     void damage(LivingDamageEvent event) {
         LivingEntity living = event.getEntity();
         DamageSource source = event.getSource();
+        float amount = event.getAmount();
         if (/*source.getEntity() instanceof Player playerAttacker && */living instanceof Player playerTarget) {
             boolean isAttackerRunner = false;//PlayerDuck.of(playerAttacker).isRunner();
             boolean isTargetRunner = PlayerDuck.of(playerTarget).isRunner();
