@@ -4,6 +4,8 @@ import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
+import tfar.damageenchantsmyinventory.DamageEnchantsMyInventory;
+import tfar.damageenchantsmyinventory.DamageEnchantsMyInventoryForge;
 import tfar.damageenchantsmyinventory.platform.services.IPlatformHelper;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -35,9 +37,9 @@ public class ForgePlatformHelper implements IPlatformHelper {
 
     @Override
     public <F> void registerAll(Map<String, ? extends F> map, Registry<F> registry, Class<? extends F> filter) {
-        List<Pair<ResourceLocation, Supplier<?>>> list = SoosigsForge.registerLater.computeIfAbsent(registry, k -> new ArrayList<>());
+        List<Pair<ResourceLocation, Supplier<?>>> list = DamageEnchantsMyInventoryForge.registerLater.computeIfAbsent(registry, k -> new ArrayList<>());
         for (Map.Entry<String, ? extends F> entry : map.entrySet()) {
-            list.add(Pair.of(Soosigs.id(entry.getKey()), entry::getValue));
+            list.add(Pair.of(DamageEnchantsMyInventory.id(entry.getKey()), entry::getValue));
         }
     }
 

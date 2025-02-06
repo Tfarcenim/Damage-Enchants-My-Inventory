@@ -1,6 +1,8 @@
 package tfar.damageenchantsmyinventory;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.enchantment.Enchantment;
+import tfar.damageenchantsmyinventory.init.ModEnchantments;
 import tfar.damageenchantsmyinventory.platform.Services;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Items;
@@ -21,7 +23,7 @@ public class DamageEnchantsMyInventory {
     // write the majority of your code here and load it from your loader specific projects. This example has some
     // code that gets invoked by the entry point of the loader specific projects.
     public static void init() {
-
+        Services.PLATFORM.registerAll(ModEnchantments.class,BuiltInRegistries.ENCHANTMENT, Enchantment.class);
         // It is common for all supported loaders to provide a similar feature that can not be used directly in the
         // common code. A popular way to get around this is using Java's built-in service loader feature to create
         // your own abstraction layer. You can learn more about this in our provided services class. In this example
