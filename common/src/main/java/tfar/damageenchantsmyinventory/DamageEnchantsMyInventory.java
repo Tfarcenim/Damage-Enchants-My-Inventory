@@ -2,6 +2,7 @@ package tfar.damageenchantsmyinventory;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -14,6 +15,7 @@ import tfar.damageenchantsmyinventory.ducks.EntityDuck;
 import tfar.damageenchantsmyinventory.init.ModBlocks;
 import tfar.damageenchantsmyinventory.init.ModEnchantments;
 import tfar.damageenchantsmyinventory.init.ModEntityTypes;
+import tfar.damageenchantsmyinventory.init.ModMobEffects;
 import tfar.damageenchantsmyinventory.network.PacketHandler;
 import tfar.damageenchantsmyinventory.network.client.S2CEntityModData;
 import tfar.damageenchantsmyinventory.platform.Services;
@@ -41,6 +43,7 @@ public class DamageEnchantsMyInventory {
         Services.PLATFORM.registerAll(ModEnchantments.class,BuiltInRegistries.ENCHANTMENT, Enchantment.class);
         Services.PLATFORM.registerAll(ModBlocks.class,BuiltInRegistries.BLOCK, Block.class);
         Services.PLATFORM.registerAll(ModEntityTypes.class,BuiltInRegistries.ENTITY_TYPE, (Class<EntityType<?>>)(Object)EntityType.class);
+        Services.PLATFORM.registerAll(ModMobEffects.class,BuiltInRegistries.MOB_EFFECT, MobEffect.class);
         // It is common for all supported loaders to provide a similar feature that can not be used directly in the
         // common code. A popular way to get around this is using Java's built-in service loader feature to create
         // your own abstraction layer. You can learn more about this in our provided services class. In this example

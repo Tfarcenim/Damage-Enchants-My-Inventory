@@ -8,15 +8,18 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -27,15 +30,17 @@ import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.damageenchantsmyinventory.client.ModClientForge;
 import tfar.damageenchantsmyinventory.datagen.ModDatagen;
+import tfar.damageenchantsmyinventory.ducks.EntityDuck;
 import tfar.damageenchantsmyinventory.ducks.PlayerDuck;
-import tfar.damageenchantsmyinventory.entity.SmallTnt;
+import tfar.damageenchantsmyinventory.entity.ClonePlayerEntity;
+import tfar.damageenchantsmyinventory.entity.SmallTntEntity;
 import tfar.damageenchantsmyinventory.init.ModEnchantments;
+import tfar.damageenchantsmyinventory.init.ModEntityTypes;
+import tfar.damageenchantsmyinventory.init.ModMobEffects;
 import tfar.damageenchantsmyinventory.init.ModTags;
+import tfar.damageenchantsmyinventory.mobeffect.PhantomNoisesEffect;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 @Mod(DamageEnchantsMyInventory.MOD_ID)
@@ -51,6 +56,7 @@ public class DamageEnchantsMyInventoryForge {
         bus.addListener(this::registerObjs);
         bus.addListener(this::setup);
         bus.addListener(ModDatagen::gather);
+        bus.addListener(this::attributes);
         if (FMLEnvironment.dist.isClient()) {
             ModClientForge.init(bus);
         }
@@ -59,6 +65,11 @@ public class DamageEnchantsMyInventoryForge {
         MinecraftForge.EVENT_BUS.addListener(this::commands);
         MinecraftForge.EVENT_BUS.addListener(this::damage);
         MinecraftForge.EVENT_BUS.addListener(this::blockBreak);
+    }
+
+    void preventCuring(MobEffectEvent
+                       ) {
+
     }
 
     void damage(LivingDamageEvent event) {
@@ -70,10 +81,24 @@ public class DamageEnchantsMyInventoryForge {
             if (livingAttacker.getMainHandItem().getEnchantmentLevel(ModEnchantments.LIFE_LEECH) > 0) {
                 livingAttacker.heal((float) (amount * DEMIConfig.life_leech_amount));
             }
+
+            if (livingAttacker.getMainHandItem().getEnchantmentLevel(ModEnchantments.HOWLING_ECHO) > 0) {
+                living.addEffect(new MobEffectInstance(ModMobEffects.PHANTOM_NOISES,40 * 20,0,false,false));
+            }
+
+            if (livingAttacker.getMainHandItem().getEnchantmentLevel(ModEnchantments.ARCHERS_EYE) > 0) {
+                living.addEffect(new MobEffectInstance(MobEffects.GLOWING,1000,0,false,false));
+                if (EntityDuck.of(living).getModData().weakToNextArrow()) {
+                    event.setAmount(event.getAmount() *2);
+                    EntityDuck.of(living).modifyData(EntityModData.WEAK_TO_NEXT_ARROW,false);
+                } else {
+                    EntityDuck.of(living).modifyData(EntityModData.WEAK_TO_NEXT_ARROW,true);
+                }
+            }
         }
 
-        if (/*source.getEntity() instanceof Player playerAttacker && */living instanceof Player playerTarget) {
-            boolean isAttackerRunner = false;//PlayerDuck.of(playerAttacker).isRunner();
+        if (source.getEntity() instanceof Player playerAttacker && living instanceof Player playerTarget) {
+            boolean isAttackerRunner = PlayerDuck.of(playerAttacker).isRunner();
             boolean isTargetRunner = PlayerDuck.of(playerTarget).isRunner();
             if (isAttackerRunner != isTargetRunner) {
                 if (isTargetRunner) {
@@ -92,10 +117,14 @@ public class DamageEnchantsMyInventoryForge {
         BlockPos pos = event.getPos();
         Level level = (Level) event.getLevel();
         ItemStack stack = player.getMainHandItem();
-        if (stack.getEnchantmentLevel(ModEnchantments.VOLATILE_HARVEST) > 0) {
-            SmallTnt smallTnt = new SmallTnt(level,pos.getX()+.5,pos.getY(),pos.getZ()+.5,player);
-            level.addFreshEntity(smallTnt);
+        if (stack.getEnchantmentLevel(ModEnchantments.VOLATILE_HARVEST) > 0 && player.getRandom().nextDouble() < DEMIConfig.volatile_harvest_chance ) {
+            SmallTntEntity smallTntEntity = new SmallTntEntity(level,pos.getX()+.5,pos.getY(),pos.getZ()+.5,player);
+            level.addFreshEntity(smallTntEntity);
         }
+    }
+
+    void attributes(EntityAttributeCreationEvent event) {
+        event.put(ModEntityTypes.CLONE_PLAYER, ClonePlayerEntity.createAttributes().build());
     }
 
     static void enchantRandomItem(Player player) {
@@ -165,6 +194,7 @@ public class DamageEnchantsMyInventoryForge {
 
     void setup(FMLCommonSetupEvent event) {
         registerLater.clear();
+        PhantomNoisesEffect.setup();
     }
 
 }

@@ -13,7 +13,10 @@ import org.codehaus.plexus.util.StringUtils;
 import tfar.damageenchantsmyinventory.DamageEnchantsMyInventory;
 import tfar.damageenchantsmyinventory.init.ModBlocks;
 import tfar.damageenchantsmyinventory.init.ModEnchantments;
+import tfar.damageenchantsmyinventory.init.ModMobEffects;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class ModLangProvider extends LanguageProvider {
@@ -24,9 +27,16 @@ public class ModLangProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
 
+        Set<Enchantment> exclude = new HashSet<>(1);
+        exclude.add(ModEnchantments.ARCHERS_EYE);
         DamageEnchantsMyInventory.getKnownEnchantments().forEach(enchantment -> {
-            addDefaultEnchantment(() -> enchantment);
+            if (!exclude.contains(enchantment)) {
+            addDefaultEnchantment(() -> enchantment);}
         });
+
+        addEnchantment(() -> ModEnchantments.ARCHERS_EYE,"Archer's Eye");
+
+        addEffect(() -> ModMobEffects.INVERTED_CONTROLS,"Inverted Controls");
 
         addDefaultBlock(() -> ModBlocks.INFERNAL_FIRE);
     }

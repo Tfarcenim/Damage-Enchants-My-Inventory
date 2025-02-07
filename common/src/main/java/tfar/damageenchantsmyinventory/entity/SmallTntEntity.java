@@ -18,18 +18,18 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.TraceableEntity;
 import tfar.damageenchantsmyinventory.init.ModEntityTypes;
 
-public class SmallTnt extends Entity implements TraceableEntity {
-        private static final EntityDataAccessor<Integer> DATA_FUSE_ID = SynchedEntityData.defineId(SmallTnt.class, EntityDataSerializers.INT);
+public class SmallTntEntity extends Entity implements TraceableEntity {
+        private static final EntityDataAccessor<Integer> DATA_FUSE_ID = SynchedEntityData.defineId(SmallTntEntity.class, EntityDataSerializers.INT);
         private static final int DEFAULT_FUSE_TIME = 80;
         @Nullable
         private LivingEntity owner;
 
-        public SmallTnt(EntityType<? extends SmallTnt> pEntityType, Level pLevel) {
+        public SmallTntEntity(EntityType<? extends SmallTntEntity> pEntityType, Level pLevel) {
             super(pEntityType, pLevel);
             this.blocksBuilding = true;
         }
 
-        public SmallTnt(Level pLevel, double pX, double pY, double pZ, @Nullable LivingEntity pOwner) {
+        public SmallTntEntity(Level pLevel, double pX, double pY, double pZ, @Nullable LivingEntity pOwner) {
             this(ModEntityTypes.SMALL_TNT, pLevel);
             this.setPos(pX, pY, pZ);
             double angle = pLevel.random.nextDouble() * 2*Math.PI;

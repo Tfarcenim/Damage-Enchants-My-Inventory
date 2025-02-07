@@ -38,7 +38,9 @@ public class EnchantmentTagsProvider extends TagsProvider<Enchantment> {
         tag(ModTags.Enchantments.HUNTER).addTag(ModTags.Enchantments.NEUTRAL);
         tag(ModTags.Enchantments.RUNNER).addTag(ModTags.Enchantments.NEUTRAL)
                 .add(getKey(ModEnchantments.INFERNAL_FLAME),getKey(ModEnchantments.LIFE_LEECH),
-                        getKey(ModEnchantments.SHADOW_BLINK),getKey(ModEnchantments.TOXIC_CLOUD),getKey(ModEnchantments.VOLATILE_HARVEST));
+                        getKey(ModEnchantments.SHADOW_BLINK),getKey(ModEnchantments.TOXIC_CLOUD),
+                        getKey(ModEnchantments.VOLATILE_HARVEST),getKey(ModEnchantments.ARCHERS_EYE)
+                        ,getKey(ModEnchantments.SHADOW_BLINK),getKey(ModEnchantments.PHANTOM_STALKER),getKey(ModEnchantments.CURSED_MIRROR));
     }
 
     static ResourceKey<Enchantment> getKey(Enchantment enchantment) {

@@ -11,9 +11,9 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
-import tfar.damageenchantsmyinventory.entity.SmallTnt;
+import tfar.damageenchantsmyinventory.entity.SmallTntEntity;
 
-public class SmallTntRenderer  extends EntityRenderer<SmallTnt> {
+public class SmallTntRenderer  extends EntityRenderer<SmallTntEntity> {
         private final BlockRenderDispatcher blockRenderer;
 
         public SmallTntRenderer(EntityRendererProvider.Context pContext) {
@@ -22,7 +22,7 @@ public class SmallTntRenderer  extends EntityRenderer<SmallTnt> {
             this.blockRenderer = pContext.getBlockRenderDispatcher();
         }
 
-        public void render(SmallTnt pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) {
+        public void render(SmallTntEntity pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) {
             pPoseStack.pushPose();
             pPoseStack.translate(0.0F, 0.5F, 0.0F);
             int fuse = pEntity.getFuse();
@@ -45,7 +45,7 @@ public class SmallTntRenderer  extends EntityRenderer<SmallTnt> {
             super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
         }
 
-        public ResourceLocation getTextureLocation(SmallTnt pEntity) {
+        public ResourceLocation getTextureLocation(SmallTntEntity pEntity) {
             return TextureAtlas.LOCATION_BLOCKS;
         }
     }
