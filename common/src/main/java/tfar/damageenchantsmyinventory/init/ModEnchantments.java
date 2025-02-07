@@ -6,6 +6,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.alchemy.Potions;
@@ -116,5 +117,11 @@ public class ModEnchantments {
             .builder(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND)
             .range(SimpleEnchantment.SILK_TOUCH_RANGE)
             .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
+            .postAttack((attacker, target, enchantmentLevel) -> {
+                if (target instanceof LivingEntity entity) {
+                    entity.addEffect(new MobEffectInstance(ModMobEffects.POLYMORPH,6 * 20,0,false,false));
+                }
+            })
             .build();
+
 }

@@ -4,6 +4,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import tfar.damageenchantsmyinventory.network.client.S2CModPacket;
 import tfar.damageenchantsmyinventory.network.server.C2SModPacket;
 
@@ -76,4 +77,7 @@ public interface IPlatformHelper {
 
     void sendToTrackingClients(S2CModPacket msg, Entity entity);
 
+    void morphIntoPassiveMob(LivingEntity livingEntity);
+
+    void demorph(LivingEntity livingEntity);
 }

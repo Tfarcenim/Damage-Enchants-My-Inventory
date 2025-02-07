@@ -1,5 +1,14 @@
 {
   "values": [
-    "#damageenchantsmyinventory:neutral"
+    "#damageenchantsmyinventory:neutral",
+    "damageenchantsmyinventory:infernal_flame",
+    "damageenchantsmyinventory:life_leech",
+    "damageenchantsmyinventory:shadow_blink",
+    "damageenchantsmyinventory:toxic_cloud",
+    "damageenchantsmyinventory:volatile_harvest",
+    "damageenchantsmyinventory:archers_eye",
+    "damageenchantsmyinventory:shadow_blink",
+    "damageenchantsmyinventory:phantom_stalker",
+    "damageenchantsmyinventory:cursed_mirror"
   ]
 }

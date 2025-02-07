@@ -80,6 +80,11 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     compileOnly project(":common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
+
+    implementation fg.deobf("curse.maven:remorphed-950721:5755676")
+    // required by Remorphed
+    implementation fg.deobf("curse.maven:crafted-core-923377:5987781")
+    implementation fg.deobf("curse.maven:woodwalkers-868922:5794816")
 }
 
 tasks.withType(JavaCompile).configureEach {

@@ -6,16 +6,22 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.PacketDistributor;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.damageenchantsmyinventory.DamageEnchantsMyInventory;
 import tfar.damageenchantsmyinventory.DamageEnchantsMyInventoryForge;
 import tfar.damageenchantsmyinventory.PacketHandlerForge;
+import tfar.damageenchantsmyinventory.compat.WoodwalkersCompat;
+import tfar.damageenchantsmyinventory.mobeffect.PolymorphMobEffect;
 import tfar.damageenchantsmyinventory.network.client.S2CModPacket;
 import tfar.damageenchantsmyinventory.network.server.C2SModPacket;
 import tfar.damageenchantsmyinventory.platform.services.IPlatformHelper;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
+import tocraft.remorphed.Remorphed;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,5 +88,20 @@ public class ForgePlatformHelper implements IPlatformHelper {
     @Override
     public void sendToTrackingClients(S2CModPacket msg, Entity entity) {
         PacketHandlerForge.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity),msg);
+    }
+
+    @Override
+    public void morphIntoPassiveMob(LivingEntity livingEntity) {
+        if (livingEntity instanceof ServerPlayer player) {
+            EntityType<? extends LivingEntity> type = PolymorphMobEffect.TYPES.get(livingEntity.getRandom().nextInt(PolymorphMobEffect.TYPES.size()));
+            WoodwalkersCompat.morph(player, type.create(livingEntity.level()));
+        }
+    }
+
+    @Override
+    public void demorph(LivingEntity livingEntity) {
+        if (livingEntity instanceof ServerPlayer player) {
+            WoodwalkersCompat.morph(player, null);
+        }
     }
 }

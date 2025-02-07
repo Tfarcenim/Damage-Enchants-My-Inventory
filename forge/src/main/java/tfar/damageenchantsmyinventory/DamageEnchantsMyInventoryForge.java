@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -39,6 +40,7 @@ import tfar.damageenchantsmyinventory.init.ModEntityTypes;
 import tfar.damageenchantsmyinventory.init.ModMobEffects;
 import tfar.damageenchantsmyinventory.init.ModTags;
 import tfar.damageenchantsmyinventory.mobeffect.PhantomNoisesEffect;
+import tfar.damageenchantsmyinventory.mobeffect.PolymorphMobEffect;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -65,11 +67,6 @@ public class DamageEnchantsMyInventoryForge {
         MinecraftForge.EVENT_BUS.addListener(this::commands);
         MinecraftForge.EVENT_BUS.addListener(this::damage);
         MinecraftForge.EVENT_BUS.addListener(this::blockBreak);
-    }
-
-    void preventCuring(MobEffectEvent
-                       ) {
-
     }
 
     void damage(LivingDamageEvent event) {
@@ -195,6 +192,7 @@ public class DamageEnchantsMyInventoryForge {
     void setup(FMLCommonSetupEvent event) {
         registerLater.clear();
         PhantomNoisesEffect.setup();
+        Collections.addAll(PolymorphMobEffect.TYPES,EntityType.RABBIT,EntityType.COW, EntityType.PIG,EntityType.SHEEP);
     }
 
 }
