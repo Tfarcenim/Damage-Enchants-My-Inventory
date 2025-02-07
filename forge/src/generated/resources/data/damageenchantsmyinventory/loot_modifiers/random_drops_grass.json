@@ -1,0 +1,18 @@
+{
+  "type": "damageenchantsmyinventory:random_drops",
+  "conditions": [
+    {
+      "condition": "minecraft:match_tool",
+      "predicate": {
+        "enchantments": [
+          {
+            "enchantment": "damageenchantsmyinventory:random_drops",
+            "levels": {
+              "min": 1
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

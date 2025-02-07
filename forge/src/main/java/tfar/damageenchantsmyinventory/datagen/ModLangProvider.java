@@ -4,6 +4,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -27,16 +28,14 @@ public class ModLangProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
 
-        Set<Enchantment> exclude = new HashSet<>(1);
-        exclude.add(ModEnchantments.ARCHERS_EYE);
+        Set<Enchantment> eexclude = new HashSet<>(1);
+        eexclude.add(ModEnchantments.ARCHERS_EYE);
         DamageEnchantsMyInventory.getKnownEnchantments().forEach(enchantment -> {
-            if (!exclude.contains(enchantment)) {
+            if (!eexclude.contains(enchantment)) {
             addDefaultEnchantment(() -> enchantment);}
         });
 
         addEnchantment(() -> ModEnchantments.ARCHERS_EYE,"Archer's Eye");
-
-        addEffect(() -> ModMobEffects.INVERTED_CONTROLS,"Inverted Controls");
 
         addDefaultBlock(() -> ModBlocks.INFERNAL_FIRE);
     }
@@ -57,6 +56,10 @@ public class ModLangProvider extends LanguageProvider {
         addEntityType(supplier,getNameFromEntity(supplier.get()));
     }
 
+    protected void addDefaultMobEffect(Supplier<MobEffect> supplier) {
+        addEffect(supplier,getNameFromMobEffect(supplier.get()));
+    }
+
     public static String getNameFromItem(Item item) {
         return StringUtils.capitaliseAllWords(item.getDescriptionId().split("\\.")[2].replace("_", " "));
     }
@@ -71,6 +74,10 @@ public class ModLangProvider extends LanguageProvider {
 
     public static String getNameFromEntity(EntityType<?> entity) {
         return StringUtils.capitaliseAllWords(entity.getDescriptionId().split("\\.")[2].replace("_", " "));
+    }
+
+    public static String getNameFromMobEffect(MobEffect effect) {
+        return StringUtils.capitaliseAllWords(effect.getDescriptionId().split("\\.")[2].replace("_", " "));
     }
 
     protected void addTranslatableComponent(MutableComponent component, String text) {

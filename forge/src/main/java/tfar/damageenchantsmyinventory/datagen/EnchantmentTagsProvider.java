@@ -8,6 +8,7 @@ import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
 import tfar.damageenchantsmyinventory.DamageEnchantsMyInventory;
 import tfar.damageenchantsmyinventory.init.ModEnchantments;
@@ -34,13 +35,19 @@ public class EnchantmentTagsProvider extends TagsProvider<Enchantment> {
                 vanilla.add(enchantment);
             }
         }
-        tag(ModTags.Enchantments.NEUTRAL).add(vanilla.stream().map(EnchantmentTagsProvider::getKey).toArray(ResourceKey[]::new));
-        tag(ModTags.Enchantments.HUNTER).addTag(ModTags.Enchantments.NEUTRAL);
+        tag(ModTags.Enchantments.NEUTRAL).add(vanilla.stream().map(EnchantmentTagsProvider::getKey).toArray(ResourceKey[]::new))
+                .add(getKey(ModEnchantments.RANDOM_DROPS),getKey(ModEnchantments.DUPLICATION));
+
+        tag(ModTags.Enchantments.HUNTER).addTag(ModTags.Enchantments.NEUTRAL)
+                .add(getKey(ModEnchantments.BUTTERFINGERS),getKey(ModEnchantments.MISFIRE),
+                        getKey(ModEnchantments.OVERFLOW),getKey(ModEnchantments.INVENTORY_LOCK));
+
         tag(ModTags.Enchantments.RUNNER).addTag(ModTags.Enchantments.NEUTRAL)
                 .add(getKey(ModEnchantments.INFERNAL_FLAME),getKey(ModEnchantments.LIFE_LEECH),
                         getKey(ModEnchantments.SHADOW_BLINK),getKey(ModEnchantments.TOXIC_CLOUD),
                         getKey(ModEnchantments.VOLATILE_HARVEST),getKey(ModEnchantments.ARCHERS_EYE)
-                        ,getKey(ModEnchantments.SHADOW_BLINK),getKey(ModEnchantments.PHANTOM_STALKER),getKey(ModEnchantments.CURSED_MIRROR));
+                        ,getKey(ModEnchantments.SHADOW_BLINK),getKey(ModEnchantments.PHANTOM_STALKER),getKey(ModEnchantments.CURSED_MIRROR)
+                ,getKey(ModEnchantments.HOWLING_ECHO),getKey(ModEnchantments.POLYMORPH_TOUCH));
     }
 
     static ResourceKey<Enchantment> getKey(Enchantment enchantment) {

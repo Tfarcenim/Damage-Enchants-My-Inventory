@@ -1,5 +1,9 @@
 {
   "values": [
-    "#damageenchantsmyinventory:neutral"
+    "#damageenchantsmyinventory:neutral",
+    "damageenchantsmyinventory:butterfingers",
+    "damageenchantsmyinventory:misfire",
+    "damageenchantsmyinventory:overflow",
+    "damageenchantsmyinventory:inventory_lock"
   ]
 }

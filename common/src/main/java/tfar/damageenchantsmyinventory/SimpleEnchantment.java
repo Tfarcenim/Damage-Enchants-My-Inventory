@@ -14,6 +14,8 @@ public class SimpleEnchantment extends Enchantment {
     protected final IntUnaryOperator range;
     protected final PostAttack postAttack;
     protected final PostHurt postHurt;
+    protected final boolean treasureOnly;
+    protected final boolean curse;
 
     protected SimpleEnchantment(Properties properties) {
         super(properties.rarity,properties.category,properties.slots);
@@ -22,6 +24,8 @@ public class SimpleEnchantment extends Enchantment {
         this.range = properties.range;
         this.postAttack = properties.postAttack;
         this.postHurt = properties.postHurt;
+        this.treasureOnly = properties.treasureOnly;
+        this.curse = properties.curse;
     }
 
     @Override
@@ -49,6 +53,16 @@ public class SimpleEnchantment extends Enchantment {
         postHurt.doPostHurt($$0, $$1, $$2);
     }
 
+    @Override
+    public boolean isTreasureOnly() {
+        return treasureOnly;
+    }
+
+    @Override
+    public boolean isCurse() {
+        return curse;
+    }
+
     public static class Properties {
         final Rarity rarity;
         final EnchantmentCategory category;
@@ -59,6 +73,8 @@ public class SimpleEnchantment extends Enchantment {
         IntUnaryOperator range = level -> 5;
         PostAttack postAttack = (attacker, target, enchantmentLevel) -> {};
         PostHurt postHurt = (user, attacker, level) -> {};
+        boolean treasureOnly;
+        boolean curse;
 
         public Properties(Rarity rarity, EnchantmentCategory category, EquipmentSlot... slots) {
             this.rarity = rarity;
@@ -92,6 +108,16 @@ public class SimpleEnchantment extends Enchantment {
 
         public Properties postHurt(PostHurt postHurt) {
             this.postHurt = postHurt;
+            return this;
+        }
+
+        public Properties setTreasureOnly() {
+            treasureOnly = true;
+            return this;
+        }
+
+        public Properties setCurse() {
+            curse = true;
             return this;
         }
 

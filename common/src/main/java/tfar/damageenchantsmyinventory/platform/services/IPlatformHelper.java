@@ -5,6 +5,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import tfar.damageenchantsmyinventory.network.client.S2CModPacket;
 import tfar.damageenchantsmyinventory.network.server.C2SModPacket;
 
@@ -80,4 +84,8 @@ public interface IPlatformHelper {
     void morphIntoPassiveMob(LivingEntity livingEntity);
 
     void demorph(LivingEntity livingEntity);
+
+    EnchantmentCategory create(String name, java.util.function.Predicate<Item> delegate);
+
+    int getEnchantmentLevel(ItemStack stack, Enchantment enchantment);
 }

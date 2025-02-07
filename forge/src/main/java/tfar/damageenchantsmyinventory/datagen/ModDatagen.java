@@ -24,7 +24,7 @@ public class ModDatagen {
         if (event.includeServer()) {
             generator.addProvider(true,new EnchantmentTagsProvider(output,provider,helper));
       //      generator.addProvider(true, new ModRecipeProvider(output));
-     //       generator.addProvider(true, new ModGlobalLootModifierProvider(output));
+            generator.addProvider(true, new ModGlobalLootModifierProvider(output));
             BlockTagsProvider blockTagsProvider = new ModBlockTagsProvider(output,provider,helper);
             generator.addProvider(true,blockTagsProvider);
       //      generator.addProvider(true,new ModItemTagProvider(output,provider,blockTagsProvider.contentsGetter(),helper));

@@ -2,15 +2,17 @@ package tfar.damageenchantsmyinventory;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tfar.damageenchantsmyinventory.ducks.EntityDuck;
 import tfar.damageenchantsmyinventory.init.ModBlocks;
 import tfar.damageenchantsmyinventory.init.ModEnchantments;
@@ -20,7 +22,6 @@ import tfar.damageenchantsmyinventory.network.PacketHandler;
 import tfar.damageenchantsmyinventory.network.client.S2CEntityModData;
 import tfar.damageenchantsmyinventory.platform.Services;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.Items;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,6 +88,10 @@ public class DamageEnchantsMyInventory {
     public static Stream<Item> getKnownItems() {
         return getKnown(BuiltInRegistries.ITEM);
     }
+    public static Stream<MobEffect> getKnownMobEffects() {
+        return getKnown(BuiltInRegistries.MOB_EFFECT);
+    }
+
     public static Stream<Enchantment> getKnownEnchantments() {
         return getKnown(BuiltInRegistries.ENCHANTMENT);
     }
@@ -94,4 +99,5 @@ public class DamageEnchantsMyInventory {
     public static <V> Stream<V> getKnown(Registry<V> registry) {
         return registry.stream().filter(o -> registry.getKey(o).getNamespace().equals(MOD_ID));
     }
+
 }

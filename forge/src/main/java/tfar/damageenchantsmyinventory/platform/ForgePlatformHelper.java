@@ -9,6 +9,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraftforge.network.PacketDistributor;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.damageenchantsmyinventory.DamageEnchantsMyInventory;
@@ -27,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class ForgePlatformHelper implements IPlatformHelper {
@@ -103,5 +108,15 @@ public class ForgePlatformHelper implements IPlatformHelper {
         if (livingEntity instanceof ServerPlayer player) {
             WoodwalkersCompat.morph(player, null);
         }
+    }
+
+    @Override
+    public EnchantmentCategory create(String name, Predicate<Item> delegate) {
+        return EnchantmentCategory.create(name, delegate);
+    }
+
+    @Override
+    public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
+        return stack.getEnchantmentLevel(enchantment);
     }
 }

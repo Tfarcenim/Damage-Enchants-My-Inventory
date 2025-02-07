@@ -72,7 +72,7 @@ public class ModEnchantments {
             .range(SimpleEnchantment.SILK_TOUCH_RANGE)
             .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
             .postHurt((user, attacker, level) -> {
-                if (user instanceof Player playerUser /*&& attacker instanceof Player*/) {
+                if (user instanceof Player playerUser && attacker instanceof Player) {
                     ((ServerLevel)playerUser.level()).sendParticles(ParticleTypes.POOF,user.getX(),user.getY(),user.getZ(),5000,2,2,2,0);
                     ClonePlayerEntity clone = ModEntityTypes.CLONE_PLAYER.spawn((ServerLevel) user.level(),user.blockPosition(), MobSpawnType.EVENT);
                     if (clone != null) {
@@ -101,7 +101,7 @@ public class ModEnchantments {
             .range(SimpleEnchantment.SILK_TOUCH_RANGE)
             .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
             .postAttack((attacker, target, enchantmentLevel) -> {
-                if (target instanceof Player playerTarget) {
+                if (target instanceof Player playerTarget && ((Player) target).getRandom().nextDouble() < DEMIConfig.invert_controls_chance) {
                     playerTarget.addEffect(new MobEffectInstance(ModMobEffects.INVERTED_CONTROLS,10*20,0,false,false));
                 }
             })
@@ -123,5 +123,67 @@ public class ModEnchantments {
                 }
             })
             .build();
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static final Enchantment BUTTERFINGERS = SimpleEnchantment.Properties
+            .builder(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND)
+            .range(SimpleEnchantment.SILK_TOUCH_RANGE)
+            .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
+            .setCurse()
+            .build();
+
+    public static final Enchantment MISFIRE = SimpleEnchantment.Properties
+            .builder(Enchantment.Rarity.RARE, ModEnchantmentCategories.BOW_AND_CROSSBOW, EquipmentSlot.MAINHAND)
+            .range(SimpleEnchantment.SILK_TOUCH_RANGE)
+            .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
+            .setCurse()
+            .build();
+
+    public static final Enchantment OVERFLOW = SimpleEnchantment.Properties
+            .builder(Enchantment.Rarity.RARE, ModEnchantmentCategories.BUCKET, EquipmentSlot.MAINHAND)
+            .range(SimpleEnchantment.SILK_TOUCH_RANGE)
+            .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
+            .setCurse()
+            .build();
+
+    public static final Enchantment INVENTORY_LOCK = SimpleEnchantment.Properties
+            .builder(Enchantment.Rarity.RARE, ModEnchantmentCategories.ANY, EquipmentSlot.MAINHAND)
+            .range(SimpleEnchantment.SILK_TOUCH_RANGE)
+            .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
+            .setCurse()
+            .build();
+
+    public static final Enchantment DUPLICATION = SimpleEnchantment.Properties
+            .builder(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND)
+            .range(SimpleEnchantment.SILK_TOUCH_RANGE)
+            .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
+            .build();
+
+    public static final Enchantment RANDOM_DROPS = SimpleEnchantment.Properties
+            .builder(Enchantment.Rarity.RARE, EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND)
+            .range(SimpleEnchantment.SILK_TOUCH_RANGE)
+            .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
+            .build();
+
+    //1. Butterfingers
+    //Gear Slot: Weapon (Sword/Axe, Bow) or Off-Hand
+    //Effect: Periodically, there’s a chance that whenever the hunter tries to attack or block, their weapon slips out of their hand and drops on the ground.
+    //2. Misfire Bow
+    //Gear Slot: Bow/Crossbow
+    //Effect: Every so often, when the hunter tries to shoot an arrow, the arrow spawns behind them or fires in a random direction.
+    //3. Overflow
+    //Gear Slot: Bucket
+    //Effect: Every so often, when a hunter has a bucket full of water or lava in their inventory it will automatically place the contents of the bucket where the hunter is looking
+    //4. Inventory Lock
+    //Gear Slot: Any Item
+    //Effect: The item cannot be dropped from the players inventory
+
+    //1. Duplication Enchant
+    //Gear Slot: Weapon (Sword, Axe, or Bow)
+    //Effect: When you kill a mob with this enchanted weapon, that mob drops its normal loot but also spawns two new copies of itself at the location where it died.
+    //2. Random Drops
+    //Gear Slot: Tool (Pickaxe, Axe, Shovel, etc.)
+    //Effect: Whenever you break a block with this enchanted tool, the resulting drop is replaced with a completely random item from the game’s loot table.
 
 }
