@@ -7,3 +7,4 @@ accessible field net/minecraft/world/entity/AreaEffectCloud victims Ljava/util/M
 accessible field net/minecraft/world/entity/AreaEffectCloud effects Ljava/util/List;
 accessible field net/minecraft/world/entity/AreaEffectCloud reapplicationDelay I
 accessible field net/minecraft/world/entity/AreaEffectCloud ownerUUID Ljava/util/UUID;
+accessible field net/minecraft/world/entity/projectile/Projectile leftOwner Z

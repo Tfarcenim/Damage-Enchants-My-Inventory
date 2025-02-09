@@ -2,6 +2,7 @@ package tfar.damageenchantsmyinventory.init;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -22,16 +23,16 @@ import tfar.damageenchantsmyinventory.entity.ClonePlayerEntity;
 
 public class ModEnchantments {
     public static final Enchantment INFERNAL_FLAME = SimpleEnchantment.Properties
-            .builder(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND)
+            .builder(Enchantment.Rarity.RARE, ModEnchantmentCategories.WEAPON_BOW_AND_CROSSBOW, EquipmentSlot.MAINHAND)
             .range(SimpleEnchantment.SILK_TOUCH_RANGE)
             .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
-            .postAttack((attacker, target, enchantmentLevel) -> EntityDuck.of(target).modifyData(EntityModData.INFERNAL_FIRE,true))
             .build();
 
     public static final Enchantment LIFE_LEECH = SimpleEnchantment.Properties
-            .builder(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND)
+            .builder(Enchantment.Rarity.RARE, ModEnchantmentCategories.WEAPON_BOW_AND_CROSSBOW, EquipmentSlot.MAINHAND)
             .range(SimpleEnchantment.SILK_TOUCH_RANGE)
-            .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
+            .minCost(SimpleEnchantment.FIRE_ASPECT_MIN)
+            .maxLevel(2)
             .build();
 
     public static final Enchantment SHADOW_BLINK = SimpleEnchantment.Properties
@@ -62,7 +63,7 @@ public class ModEnchantments {
             .build();
 
     public static final Enchantment ARCHERS_EYE = SimpleEnchantment.Properties
-            .builder(Enchantment.Rarity.RARE, EnchantmentCategory.BOW, EquipmentSlot.MAINHAND)
+            .builder(Enchantment.Rarity.RARE, ModEnchantmentCategories.BOW_AND_CROSSBOW, EquipmentSlot.MAINHAND)
             .range(SimpleEnchantment.SILK_TOUCH_RANGE)
             .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
             .build();
@@ -71,9 +72,9 @@ public class ModEnchantments {
             .builder(Enchantment.Rarity.RARE, EnchantmentCategory.ARMOR_LEGS, EquipmentSlot.LEGS,EquipmentSlot.CHEST)
             .range(SimpleEnchantment.SILK_TOUCH_RANGE)
             .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
-            .postHurt((user, attacker, level) -> {
-                if (user instanceof Player playerUser && attacker instanceof Player) {
-                    ((ServerLevel)playerUser.level()).sendParticles(ParticleTypes.POOF,user.getX(),user.getY(),user.getZ(),5000,2,2,2,0);
+            .postHurt((user, attacker, level) -> {//called on the client for some reason
+                if (user instanceof ServerPlayer playerUser && attacker instanceof Player) {
+                    playerUser.serverLevel().sendParticles(ParticleTypes.POOF,user.getX(),user.getY(),user.getZ(),5000,2,2,2,0);
                     ClonePlayerEntity clone = ModEntityTypes.CLONE_PLAYER.spawn((ServerLevel) user.level(),user.blockPosition(), MobSpawnType.EVENT);
                     if (clone != null) {
                         clone.setClone(playerUser.getGameProfile());
@@ -108,7 +109,7 @@ public class ModEnchantments {
             .build();
 
     public static final Enchantment HOWLING_ECHO = SimpleEnchantment.Properties
-            .builder(Enchantment.Rarity.RARE, EnchantmentCategory.BOW, EquipmentSlot.MAINHAND)
+            .builder(Enchantment.Rarity.RARE, ModEnchantmentCategories.BOW_AND_CROSSBOW, EquipmentSlot.MAINHAND)
             .range(SimpleEnchantment.SILK_TOUCH_RANGE)
             .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
             .build();
@@ -119,7 +120,7 @@ public class ModEnchantments {
             .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
             .postAttack((attacker, target, enchantmentLevel) -> {
                 if (target instanceof LivingEntity entity) {
-                    entity.addEffect(new MobEffectInstance(ModMobEffects.POLYMORPH,6 * 20,0,false,false));
+                    entity.addEffect(new MobEffectInstance(ModMobEffects.POLYMORPH,15 * 20,0,false,false));
                 }
             })
             .build();
@@ -127,7 +128,7 @@ public class ModEnchantments {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static final Enchantment BUTTERFINGERS = SimpleEnchantment.Properties
-            .builder(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND)
+            .builder(Enchantment.Rarity.RARE, ModEnchantmentCategories.WEAPON_BOW_CROSSBOW_AND_SHIELD, EquipmentSlot.MAINHAND)
             .range(SimpleEnchantment.SILK_TOUCH_RANGE)
             .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
             .setCurse()

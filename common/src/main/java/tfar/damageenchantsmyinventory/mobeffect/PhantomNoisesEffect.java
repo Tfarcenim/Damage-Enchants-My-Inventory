@@ -43,7 +43,9 @@ public class PhantomNoisesEffect extends UnCurableMobEffect {
                 SoundEvents.SKELETON_AMBIENT,
                 SoundEvents.STONE_STEP,
                 SoundEvents.WITCH_AMBIENT,
-                SoundEvents.ZOMBIE_AMBIENT
+                SoundEvents.ZOMBIE_AMBIENT,
+                SoundEvents.BUCKET_EMPTY_LAVA,
+                SoundEvents.CREEPER_PRIMED
         );
     }
 

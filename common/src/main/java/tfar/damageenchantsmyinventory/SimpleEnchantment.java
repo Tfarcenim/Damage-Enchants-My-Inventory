@@ -138,5 +138,6 @@ public class SimpleEnchantment extends Enchantment {
 
     public static final IntUnaryOperator SILK_TOUCH_RANGE = level -> 50;
     public static final IntUnaryOperator SILK_TOUCH_MIN = level -> 15;
+    public static final IntUnaryOperator FIRE_ASPECT_MIN = level -> 20 * level - 10;
 
 }

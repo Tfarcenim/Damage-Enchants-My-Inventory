@@ -1,39 +1,43 @@
 package tfar.damageenchantsmyinventory;
 
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.Nullable;
 
-public class ModData extends SavedData {
+public class ModLevelData extends SavedData {
 
 
     private final ServerLevel serverLevel;
 
     boolean huntersGainEnchantments;
 
-    public ModData(ServerLevel serverLevel) {
+    Holder<Enchantment> forcedRunnerEnchantment;
+
+    public ModLevelData(ServerLevel serverLevel) {
         this.serverLevel = serverLevel;
     }
 
     @Nullable
-    public static ModData getInstance(ServerLevel serverLevel) {
+    public static ModLevelData getInstance(ServerLevel serverLevel) {
         return serverLevel.getDataStorage()
                 .get(compoundTag -> loadStatic(compoundTag, serverLevel), name(serverLevel));
     }
 
     @Nullable
-    public static ModData getDefaultInstance(MinecraftServer server) {
+    public static ModLevelData getDefaultInstance(MinecraftServer server) {
         return getInstance(server.overworld());
     }
 
-    public static ModData getOrCreateInstance(ServerLevel serverLevel) {
+    public static ModLevelData getOrCreateInstance(ServerLevel serverLevel) {
         return serverLevel.getDataStorage()
                 .computeIfAbsent(compoundTag -> loadStatic(compoundTag,serverLevel),
-                        () -> new ModData(serverLevel),name(serverLevel));
+                        () -> new ModLevelData(serverLevel),name(serverLevel));
     }
-    public static ModData getOrCreateDefaultInstance(MinecraftServer server) {
+    public static ModLevelData getOrCreateDefaultInstance(MinecraftServer server) {
         return getOrCreateInstance(server.overworld());
     }
 
@@ -41,10 +45,12 @@ public class ModData extends SavedData {
         return  DamageEnchantsMyInventory.MOD_ID+"_"+level.dimension().location().toString().replace(':','.');
     }
 
+    public void setForcedRunnerEnchantment(Holder<Enchantment> enchantment) {
+        this.forcedRunnerEnchantment = enchantment;
+    }
 
-
-    public static ModData loadStatic(CompoundTag compoundTag,ServerLevel level) {
-        ModData id = new ModData(level);
+    public static ModLevelData loadStatic(CompoundTag compoundTag, ServerLevel level) {
+        ModLevelData id = new ModLevelData(level);
         id.load(compoundTag,level);
         return id;
     }

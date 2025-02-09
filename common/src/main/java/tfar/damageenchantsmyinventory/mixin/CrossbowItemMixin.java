@@ -32,7 +32,11 @@ public class CrossbowItemMixin {
     private float modifyInaccuracy(float original) {
         boolean misfire = Services.PLATFORM.getEnchantmentLevel(localStack.get(),ModEnchantments.MISFIRE) > 0;
         if (misfire && localLivingEntity.get().getRandom().nextDouble() < DEMIConfig.misfire_chance) {
-            return 100 * original;
+            if (localLivingEntity.get().getRandom().nextDouble() < DEMIConfig.critical_misfire_chance) {
+
+            } else {
+                return 100 * original;
+            }
         }
         return original;
     }

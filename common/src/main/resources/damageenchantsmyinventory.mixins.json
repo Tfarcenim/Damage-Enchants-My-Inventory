@@ -13,7 +13,8 @@
     "SlotMixin"
   ],
   "client": [
-    "EntityRenderDispatcherMixin"
+    "EntityRenderDispatcherMixin",
+    "MouseHandlerMixin"
   ],
   "server": [
   ],

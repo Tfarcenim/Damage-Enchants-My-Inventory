@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -11,31 +12,31 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -57,6 +58,7 @@ import tfar.damageenchantsmyinventory.init.ModMobEffects;
 import tfar.damageenchantsmyinventory.init.ModTags;
 import tfar.damageenchantsmyinventory.mobeffect.PhantomNoisesEffect;
 import tfar.damageenchantsmyinventory.mobeffect.PolymorphMobEffect;
+import tfar.damageenchantsmyinventory.platform.Services;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -86,6 +88,19 @@ public class DamageEnchantsMyInventoryForge {
         MinecraftForge.EVENT_BUS.addListener(this::leftClick);
         MinecraftForge.EVENT_BUS.addListener(this::startUsingItem);
         MinecraftForge.EVENT_BUS.addListener(this::death);
+        MinecraftForge.EVENT_BUS.addListener(this::projectileDamage);
+    }
+
+    void projectileDamage(ProjectileImpactEvent event) {
+        Projectile projectile = event.getProjectile();
+        HitResult hitResult = event.getRayTraceResult();
+        if (hitResult instanceof EntityHitResult entityHitResult) {
+            Entity entity = entityHitResult.getEntity();
+            if (EntityDuck.of(projectile).displayInfernalFlame()) {
+                EntityDuck.of(entity).modifyData(EntityModData.INFERNAL_FIRE,true);
+            }
+        }
+
     }
 
     void damage(LivingDamageEvent event) {
@@ -95,7 +110,7 @@ public class DamageEnchantsMyInventoryForge {
 
         if (source.getEntity() instanceof LivingEntity livingAttacker) {
             if (livingAttacker.getMainHandItem().getEnchantmentLevel(ModEnchantments.LIFE_LEECH) > 0) {
-                livingAttacker.heal((float) (amount * DEMIConfig.life_leech_amount));
+                livingAttacker.heal((float) (amount * DEMIConfig.life_leech_amount * livingAttacker.getMainHandItem().getEnchantmentLevel(ModEnchantments.LIFE_LEECH)));
             }
 
             if (livingAttacker.getMainHandItem().getEnchantmentLevel(ModEnchantments.HOWLING_ECHO) > 0) {
@@ -111,16 +126,19 @@ public class DamageEnchantsMyInventoryForge {
                     EntityDuck.of(living).modifyData(EntityModData.WEAK_TO_NEXT_ARROW, true);
                 }
             }
+            if (livingAttacker.getMainHandItem().getEnchantmentLevel(ModEnchantments.INFERNAL_FLAME) > 0 && livingAttacker.getMainHandItem().getItem() instanceof TieredItem) {
+                            EntityDuck.of(living).modifyData(EntityModData.INFERNAL_FIRE,true);
+            }
         }
 
-        if (source.getEntity() instanceof Player playerAttacker && living instanceof Player playerTarget) {
-            boolean isAttackerRunner = PlayerDuck.of(playerAttacker).isRunner();
+        if (/*source.getEntity() instanceof Player playerAttacker && */living instanceof Player playerTarget) {
+            boolean isAttackerRunner = false;//PlayerDuck.of(playerAttacker).isRunner();
             boolean isTargetRunner = PlayerDuck.of(playerTarget).isRunner();
             if (isAttackerRunner != isTargetRunner) {
                 if (isTargetRunner) {
                     enchantRandomItem(playerTarget);
                 } else {
-                    if (ModData.getOrCreateDefaultInstance(living.getServer()).huntersGainEnchantments) {
+                    if (ModLevelData.getOrCreateDefaultInstance(living.getServer()).huntersGainEnchantments) {
                         enchantRandomItem(playerTarget);
                     }
                 }
@@ -144,7 +162,8 @@ public class DamageEnchantsMyInventoryForge {
         ItemStack stack = player.getMainHandItem();
         if (stack.getEnchantmentLevel(ModEnchantments.BUTTERFINGERS) > 0) {
             if (player.getRandom().nextDouble() < DEMIConfig.butterfingers_chance) {
-                player.drop(stack, true);
+                player.drop(stack.copy(), true);
+                stack.setCount(0);
             }
         }
     }
@@ -156,7 +175,8 @@ public class DamageEnchantsMyInventoryForge {
         if (livingEntity instanceof ServerPlayer player) {
             if (stack.getEnchantmentLevel(ModEnchantments.BUTTERFINGERS) > 0) {
                 if (player.getRandom().nextDouble() < DEMIConfig.butterfingers_chance) {
-                    player.drop(stack, true);
+                    player.drop(stack.copy(), true);
+                    stack.setCount(0);
                 }
             }
         }
@@ -169,13 +189,25 @@ public class DamageEnchantsMyInventoryForge {
     static void enchantRandomItem(Player player) {
         IntList candidates = new IntArrayList();
         boolean isRunner = PlayerDuck.of(player).isRunner();
+        Holder<Enchantment> forced = null;
+        if (isRunner) {
+            forced = ModLevelData.getOrCreateDefaultInstance(player.getServer()).forcedRunnerEnchantment;
+        }
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack stack = player.getInventory().getItem(i);
             if (!stack.isEmpty()) {
-                for (Enchantment enchantment : BuiltInRegistries.ENCHANTMENT) {
+                if (forced != null) {
+                    Enchantment enchantment = forced.get();
                     if (isEligible(stack, enchantment, isRunner)) {
                         candidates.add(i);
                         break;
+                    }
+                } else {
+                    for (Enchantment enchantment : BuiltInRegistries.ENCHANTMENT) {
+                        if (isEligible(stack, enchantment, isRunner)) {
+                            candidates.add(i);
+                            break;
+                        }
                     }
                 }
             }
@@ -183,11 +215,14 @@ public class DamageEnchantsMyInventoryForge {
         if (candidates.isEmpty()) return;
         int choose = candidates.getInt(player.getRandom().nextInt(candidates.size()));
         ItemStack stack = player.getInventory().getItem(choose);
-        List<Enchantment> possible = getPossibleEnchantments(stack, player.level(), isRunner);
+        List<Enchantment> possible = forced == null ? getPossibleEnchantments(stack, player.level(), isRunner) : List.of(forced.value());
         if (!possible.isEmpty()) {
             Enchantment randomEnchant = possible.get(player.getRandom().nextInt(possible.size()));
             int existingLevel = stack.getEnchantmentLevel(randomEnchant);
             stack.enchant(randomEnchant, existingLevel + 1);
+            if (forced != null) {
+                ModLevelData.getOrCreateDefaultInstance(player.getServer()).setForcedRunnerEnchantment(null);
+            }
         }
     }
 
@@ -216,7 +251,7 @@ public class DamageEnchantsMyInventoryForge {
     }
 
     void commands(RegisterCommandsEvent event) {
-        ModCommands.register(event.getDispatcher());
+        ModCommands.register(event.getDispatcher(),event.getBuildContext());
     }
 
     void death(LivingDeathEvent event) {
