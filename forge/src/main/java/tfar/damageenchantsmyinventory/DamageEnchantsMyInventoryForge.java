@@ -42,7 +42,9 @@ import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -55,10 +57,7 @@ import tfar.damageenchantsmyinventory.ducks.EntityDuck;
 import tfar.damageenchantsmyinventory.ducks.PlayerDuck;
 import tfar.damageenchantsmyinventory.entity.ClonePlayerEntity;
 import tfar.damageenchantsmyinventory.entity.SmallTntEntity;
-import tfar.damageenchantsmyinventory.init.ModEnchantments;
-import tfar.damageenchantsmyinventory.init.ModEntityTypes;
-import tfar.damageenchantsmyinventory.init.ModMobEffects;
-import tfar.damageenchantsmyinventory.init.ModTags;
+import tfar.damageenchantsmyinventory.init.*;
 import tfar.damageenchantsmyinventory.mobeffect.PhantomNoisesEffect;
 import tfar.damageenchantsmyinventory.mobeffect.PolymorphMobEffect;
 import tfar.damageenchantsmyinventory.platform.Services;
@@ -73,6 +72,7 @@ public class DamageEnchantsMyInventoryForge {
 
     public DamageEnchantsMyInventoryForge() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER,DEMIConfig.SERVER_SPEC);
         // This method is invoked by the Forge mod loader when it is ready
         // to load your mod. You can access Forge and Common code in this
         // project.
@@ -113,7 +113,7 @@ public class DamageEnchantsMyInventoryForge {
 
         if (source.getEntity() instanceof LivingEntity livingAttacker) {
             if (livingAttacker.getMainHandItem().getEnchantmentLevel(ModEnchantments.LIFE_LEECH) > 0) {
-                livingAttacker.heal((float) (amount * DEMIConfig.life_leech_amount * livingAttacker.getMainHandItem().getEnchantmentLevel(ModEnchantments.LIFE_LEECH)));
+                livingAttacker.heal((float) (amount * DEMIConfig.DEMI_CONFIG.life_leech_amount.get() * livingAttacker.getMainHandItem().getEnchantmentLevel(ModEnchantments.LIFE_LEECH)));
             }
 
             if (livingAttacker.getMainHandItem().getEnchantmentLevel(ModEnchantments.HOWLING_ECHO) > 0) {
@@ -134,14 +134,15 @@ public class DamageEnchantsMyInventoryForge {
             }
         }
 
-        if (/*source.getEntity() instanceof Player playerAttacker && */living instanceof Player playerTarget) {
-            boolean isAttackerRunner = false;//PlayerDuck.of(playerAttacker).isRunner();
+        if (source.getEntity() instanceof Player playerAttacker &&
+                living instanceof Player playerTarget) {
+            boolean isAttackerRunner = PlayerDuck.of(playerAttacker).isRunner();
             boolean isTargetRunner = PlayerDuck.of(playerTarget).isRunner();
             if (isAttackerRunner != isTargetRunner) {
                 if (isTargetRunner) {
                     enchantRandomItem(playerTarget);
                 } else {
-                    if (ModLevelData.getOrCreateDefaultInstance(living.getServer()).huntersGainEnchantments) {
+                    if (playerTarget.getServer().getGameRules().getBoolean(ModGameRules.RULE_DAMAGE_ENCHANTS_HUNTERS_INVENTORY)) {
                         enchantRandomItem(playerTarget);
                     }
                 }
@@ -154,7 +155,7 @@ public class DamageEnchantsMyInventoryForge {
         BlockPos pos = event.getPos();
         Level level = (Level) event.getLevel();
         ItemStack stack = player.getMainHandItem();
-        if (stack.getEnchantmentLevel(ModEnchantments.VOLATILE_HARVEST) > 0 && player.getRandom().nextDouble() < DEMIConfig.volatile_harvest_chance) {
+        if (stack.getEnchantmentLevel(ModEnchantments.VOLATILE_HARVEST) > 0 && player.getRandom().nextDouble() < DEMIConfig.DEMI_CONFIG.volatile_harvest_chance.get()) {
             SmallTntEntity smallTntEntity = new SmallTntEntity(level, pos.getX() + .5, pos.getY(), pos.getZ() + .5, player);
             level.addFreshEntity(smallTntEntity);
         }
@@ -164,7 +165,7 @@ public class DamageEnchantsMyInventoryForge {
         Player player = event.getEntity();
         ItemStack stack = player.getMainHandItem();
         if (stack.getEnchantmentLevel(ModEnchantments.BUTTERFINGERS) > 0) {
-            if (player.getRandom().nextDouble() < DEMIConfig.butterfingers_chance) {
+            if (player.getRandom().nextDouble() < DEMIConfig.DEMI_CONFIG.butterfingers_chance.get()) {
                 player.drop(stack.copy(), true);
                 stack.setCount(0);
             }
@@ -177,7 +178,7 @@ public class DamageEnchantsMyInventoryForge {
 
         if (livingEntity instanceof ServerPlayer player) {
             if (stack.getEnchantmentLevel(ModEnchantments.BUTTERFINGERS) > 0) {
-                if (player.getRandom().nextDouble() < DEMIConfig.butterfingers_chance) {
+                if (player.getRandom().nextDouble() < DEMIConfig.DEMI_CONFIG.butterfingers_chance.get()) {
                     player.drop(stack.copy(), true);
                     stack.setCount(0);
                 }
@@ -290,7 +291,7 @@ public class DamageEnchantsMyInventoryForge {
 
     public static void onItemTick(ItemStack stack, Level level, Entity entity, int slot, boolean equipped) {
         if (stack.getItem() instanceof BucketItem bucketItem && bucketItem.getFluid() != Fluids.EMPTY && entity instanceof ServerPlayer player) {
-            if (player.getRandom().nextDouble() < DEMIConfig.overflow_chance && stack.getEnchantmentLevel(ModEnchantments.OVERFLOW) > 0) {
+            if (player.getRandom().nextDouble() < DEMIConfig.DEMI_CONFIG.overflow_chance.get() && stack.getEnchantmentLevel(ModEnchantments.OVERFLOW) > 0) {
                 BlockHitResult blockHitResult = (BlockHitResult) player.pick(player.getAttributeValue(ForgeMod.BLOCK_REACH.get()),1,false);
                 if (blockHitResult.getType() != HitResult.Type.MISS) {
                     BlockPos pos = blockHitResult.getBlockPos();

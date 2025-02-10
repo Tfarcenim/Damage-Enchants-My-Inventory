@@ -13,7 +13,6 @@ public class ModLevelData extends SavedData {
 
     private final ServerLevel serverLevel;
 
-    boolean huntersGainEnchantments;
 
     Holder<Enchantment> forcedRunnerEnchantment;
 
@@ -56,12 +55,10 @@ public class ModLevelData extends SavedData {
     }
     
     public void load(CompoundTag tag,ServerLevel level) {
-        huntersGainEnchantments = tag.getBoolean("Hunters_gain_enchantments");
     }
 
     @Override
     public CompoundTag save(CompoundTag compoundTag) {
-        compoundTag.putBoolean("hunters_gain_enchantments",huntersGainEnchantments);
         return compoundTag;
     }
 }

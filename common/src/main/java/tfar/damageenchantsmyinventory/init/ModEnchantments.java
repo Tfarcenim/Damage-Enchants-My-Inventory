@@ -47,7 +47,7 @@ public class ModEnchantments {
             .range(SimpleEnchantment.SILK_TOUCH_RANGE)
             .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
             .postHurt((user, attacker, level) -> {
-                if (user.getRandom().nextDouble() < DEMIConfig.poison_cloud_chance) {
+                if (user.getRandom().nextDouble() < DEMIConfig.DEMI_CONFIG.poison_cloud_chance.get()) {
                     AreaEffectCloud areaEffectCloud = new AreaEffectCloudOwnerImmune(user.level(),user.getX(),user.getY(),user.getZ());
                     areaEffectCloud.setPotion(Potions.POISON);
                     areaEffectCloud.setOwner(user);
@@ -73,7 +73,7 @@ public class ModEnchantments {
             .range(SimpleEnchantment.SILK_TOUCH_RANGE)
             .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
             .postHurt((user, attacker, level) -> {//called on the client for some reason
-                if (user instanceof ServerPlayer playerUser && attacker instanceof Player) {
+                if (user.getRandom().nextDouble() < DEMIConfig.DEMI_CONFIG.phantom_stalker_chance.get() && user instanceof ServerPlayer playerUser && attacker instanceof Player) {
                     playerUser.serverLevel().sendParticles(ParticleTypes.POOF,user.getX(),user.getY(),user.getZ(),5000,2,2,2,0);
                     ClonePlayerEntity clone = ModEntityTypes.CLONE_PLAYER.spawn((ServerLevel) user.level(),user.blockPosition(), MobSpawnType.EVENT);
                     if (clone != null) {
@@ -98,11 +98,11 @@ public class ModEnchantments {
             .build();
 
     public static final Enchantment CURSED_MIRROR = SimpleEnchantment.Properties
-            .builder(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND)
+            .builder(Enchantment.Rarity.RARE, ModEnchantmentCategories.SWORD_AND_AXE, EquipmentSlot.MAINHAND)
             .range(SimpleEnchantment.SILK_TOUCH_RANGE)
             .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
             .postAttack((attacker, target, enchantmentLevel) -> {
-                if (target instanceof Player playerTarget && ((Player) target).getRandom().nextDouble() < DEMIConfig.invert_controls_chance) {
+                if (target instanceof Player playerTarget && ((Player) target).getRandom().nextDouble() < DEMIConfig.DEMI_CONFIG.cursed_mirror_chance.get()) {
                     playerTarget.addEffect(new MobEffectInstance(ModMobEffects.INVERTED_CONTROLS,10*20,0,false,false));
                 }
             })
@@ -115,7 +115,7 @@ public class ModEnchantments {
             .build();
 
     public static final Enchantment POLYMORPH_TOUCH = SimpleEnchantment.Properties
-            .builder(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND)
+            .builder(Enchantment.Rarity.RARE, ModEnchantmentCategories.SWORD_AND_AXE, EquipmentSlot.MAINHAND)
             .range(SimpleEnchantment.SILK_TOUCH_RANGE)
             .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
             .postAttack((attacker, target, enchantmentLevel) -> {
@@ -128,7 +128,7 @@ public class ModEnchantments {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static final Enchantment BUTTERFINGERS = SimpleEnchantment.Properties
-            .builder(Enchantment.Rarity.RARE, ModEnchantmentCategories.WEAPON_BOW_CROSSBOW_AND_SHIELD, EquipmentSlot.MAINHAND)
+            .builder(Enchantment.Rarity.RARE, ModEnchantmentCategories.SWORD_AXE_BOW_CROSSBOW_AND_SHIELD, EquipmentSlot.MAINHAND)
             .range(SimpleEnchantment.SILK_TOUCH_RANGE)
             .minCost(SimpleEnchantment.SILK_TOUCH_MIN)
             .setCurse()
