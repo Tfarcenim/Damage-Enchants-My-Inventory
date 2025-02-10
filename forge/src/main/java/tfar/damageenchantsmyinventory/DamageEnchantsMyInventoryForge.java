@@ -7,6 +7,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -23,6 +25,7 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
@@ -219,11 +222,25 @@ public class DamageEnchantsMyInventoryForge {
         if (!possible.isEmpty()) {
             Enchantment randomEnchant = possible.get(player.getRandom().nextInt(possible.size()));
             int existingLevel = stack.getEnchantmentLevel(randomEnchant);
+            cleanupDuplicates(stack,randomEnchant);
             stack.enchant(randomEnchant, existingLevel + 1);
+
+
+
             if (forced != null) {
                 ModLevelData.getOrCreateDefaultInstance(player.getServer()).setForcedRunnerEnchantment(null);
             }
         }
+    }
+
+    static void cleanupDuplicates(ItemStack stack,Enchantment enchantment) {
+        CompoundTag tag = stack.getTag();
+
+        ListTag listtag = tag.getList("Enchantments", CompoundTag.TAG_COMPOUND);
+
+        ResourceLocation enchantmentId = EnchantmentHelper.getEnchantmentId(enchantment);
+        listtag.removeIf(tag1 -> ((CompoundTag)tag1).getString("id").equals(enchantmentId.toString()));
+
     }
 
     public static boolean isEligible(ItemStack stack, Enchantment enchantment, boolean isRunner) {

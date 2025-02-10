@@ -50,10 +50,10 @@ public class BowItemMixin {
     private void onArrowAdded(ItemStack pStack, Level pLevel, LivingEntity pEntityLiving, int pTimeLeft, CallbackInfo ci,
                               Player player, boolean flag, ItemStack itemstack, int i, float f, boolean flag1, ArrowItem arrowitem, AbstractArrow abstractarrow) {
 
-        if (pEntityLiving.getRandom().nextDouble() < 1) {
+        if (pStack.getEnchantmentLevel(ModEnchantments.MISFIRE) > 0 && pEntityLiving.getRandom().nextDouble() < DEMIConfig.critical_misfire_chance) {
             Vec3 look = player.getLookAngle();
             abstractarrow.leftOwner = true;
-            //abstractarrow.setPos(abstractarrow.position().add(look.reverse()));
+            abstractarrow.setPos(abstractarrow.position().add(look.reverse()));
         }
         if (pStack.getEnchantmentLevel(ModEnchantments.INFERNAL_FLAME) > 0) {
             EntityDuck.of(abstractarrow).modifyData(EntityModData.INFERNAL_FIRE,true);
